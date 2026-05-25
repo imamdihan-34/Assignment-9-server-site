@@ -3,19 +3,16 @@ const router = express.Router();
 const Tutor = require("../models/Tutor");
 const verifyToken = require("../middleware/verifyToken");
 
-// ✅ Public — সব tutor আনো (Search & Filter সহ)
 router.get("/", async (req, res) => {
   try {
     const { search, startDate, endDate } = req.query;
 
     let query = {};
 
-    // ✅ Search by name — case insensitive
     if (search) {
       query.tutorName = { $regex: search, $options: "i" };
     }
 
-    // ✅ Filter by session start date
     if (startDate && endDate) {
       query.sessionStartDate = {
         $gte: startDate,
@@ -34,7 +31,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ Private — নির্দিষ্ট user এর tutors
 router.get("/my-tutors", verifyToken, async (req, res) => {
   try {
     const { email } = req.query;
@@ -50,7 +46,6 @@ router.get("/my-tutors", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Public — একটা tutor আনো
 router.get("/:id", async (req, res) => {
   try {
     const tutor = await Tutor.findById(req.params.id);
@@ -61,7 +56,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ✅ Private — নতুন tutor add করো
 router.post("/", verifyToken, async (req, res) => {
   try {
     const tutor = new Tutor(req.body);
@@ -72,21 +66,17 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Private — tutor update করো
 router.put("/:id", verifyToken, async (req, res) => {
   try {
-    const updated = await Tutor.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const updated = await Tutor.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(updated);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// ✅ Private — tutor delete করো
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     await Tutor.findByIdAndDelete(req.params.id);

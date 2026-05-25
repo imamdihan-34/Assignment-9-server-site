@@ -10,7 +10,7 @@ const bookingSchema = new mongoose.Schema({
   userEmail: { type: String, required: true },
   studentName: { type: String, required: true },
   phone: { type: String, required: true },
-  status: { type: String, default: "confirmed" }, // ✅ যোগ করলাম
+  status: { type: String, default: "confirmed" }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model("Booking", bookingSchema);
