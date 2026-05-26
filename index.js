@@ -8,9 +8,10 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
-    "http://localhost:3000",
+     "http://localhost:3000",
     "https://mediqueue-client-side.vercel.app",
     "https://mediqueue-client-side-git-main-imamdihan-34s-projects.vercel.app",
+    "https://mediqueue-client-side-1i0kjzney-imamdihan-34s-projects.vercel.app",
   ],
   credentials: true,
 }));
