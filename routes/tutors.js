@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
     const { search, startDate, endDate } = req.query;
 
     let query = {};
-
     if (search) {
       query.tutorName = { $regex: search, $options: "i" };
     }
