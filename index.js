@@ -4,11 +4,10 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:3000", "https://your-client.vercel.app"],
+  origin: "*",
   credentials: true,
 }));
 app.use(express.json());
@@ -27,24 +26,28 @@ app.get("/", (req, res) => {
   res.send("MediQueue Server is running!");
 });
 
-// ✅ MongoDB connect — serverless এর জন্য
-let isConnected = false;
-
+// ✅ MongoDB connect
 const connectDB = async () => {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    isConnected = true;
-    console.log("✅ MongoDB Connected!");
-  } catch (err) {
-    console.error("❌ MongoDB Error:", err);
-  }
+  if (mongoose.connection.readyState >= 1) return;
+  return mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000,
+  });
 };
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-  });
-});
+// ✅ Vercel serverless handler
+const handler = async (req, res) => {
+  await connectDB();
+  return app(req, res);
+};
 
-module.exports = app;
+// Local development
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  });
+}
+
+module.exports = handler;
