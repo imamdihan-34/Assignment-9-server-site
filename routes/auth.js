@@ -8,7 +8,6 @@ router.post("/jwt", (req, res) => {
   if (!email) {
     return res.status(400).json({ message: "Email required" });
   }
-
   const token = jwt.sign({ email }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
@@ -16,4 +15,4 @@ router.post("/jwt", (req, res) => {
   res.json({ token });
 });
 
-module.exports = router;
+module.exports = router ;
