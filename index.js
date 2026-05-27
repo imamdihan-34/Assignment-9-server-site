@@ -5,16 +5,8 @@ require("dotenv").config();
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: [
-     "http://localhost:3000",
-    "https://mediqueue-client-side.vercel.app",
-    "https://mediqueue-client-side-git-main-imamdihan-34s-projects.vercel.app",
-    "https://mediqueue-client-side-1i0kjzney-imamdihan-34s-projects.vercel.app",
-  ],
-  credentials: true,
-}));
+// ✅ সব origin allow করো
+app.use(cors());
 app.use(express.json());
 
 // Routes
@@ -31,7 +23,7 @@ app.get("/", (req, res) => {
   res.send("MediQueue Server is running!");
 });
 
-// ✅ MongoDB connect
+// MongoDB connect
 const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) return;
   return mongoose.connect(process.env.MONGODB_URI, {
@@ -39,7 +31,7 @@ const connectDB = async () => {
   });
 };
 
-// ✅ Vercel serverless handler
+// Vercel serverless handler
 const handler = async (req, res) => {
   await connectDB();
   return app(req, res);
